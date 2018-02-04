@@ -38,7 +38,7 @@ int main() {
         assertEqual(3, fullDeckCount(0, estate, &State));
 
     // Test Random Deck State
-    int deckCount = rand() % 6;
+    int deckCount = rand() % 10;
     int handCount = rand() % 6;
     int discardCount = rand() % 10;
 
