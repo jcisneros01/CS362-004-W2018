@@ -1,0 +1,188 @@
+unittest1.c:
+TESTING getCost():
+Testing Card #: 0
+Actual Cost: 0, Expected Cost: 0
+Test Passed
+
+Testing Card #: 1
+Actual Cost: 2, Expected Cost: 2
+Test Passed
+
+Testing Card #: 2
+Actual Cost: 5, Expected Cost: 5
+Test Passed
+
+Testing Card #: 3
+Actual Cost: 8, Expected Cost: 8
+Test Passed
+
+Testing Card #: 4
+Actual Cost: 0, Expected Cost: 0
+Test Passed
+
+Testing Card #: 5
+Actual Cost: 3, Expected Cost: 3
+Test Passed
+
+Testing Card #: 6
+Actual Cost: 6, Expected Cost: 6
+Test Passed
+
+Testing Card #: 7
+Actual Cost: 6, Expected Cost: 6
+Test Passed
+
+Testing Card #: 8
+Actual Cost: 5, Expected Cost: 5
+Test Passed
+
+Testing Card #: 9
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 10
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 11
+Actual Cost: 5, Expected Cost: 5
+Test Passed
+
+Testing Card #: 12
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 13
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 14
+Actual Cost: 3, Expected Cost: 3
+Test Passed
+
+Testing Card #: 15
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 16
+Actual Cost: 3, Expected Cost: 3
+Test Passed
+
+Testing Card #: 17
+Actual Cost: 5, Expected Cost: 5
+Test Passed
+
+Testing Card #: 18
+Actual Cost: 3, Expected Cost: 3
+Test Passed
+
+Testing Card #: 19
+Actual Cost: 5, Expected Cost: 5
+Test Passed
+
+Testing Card #: 20
+Actual Cost: 3, Expected Cost: 3
+Test Passed
+
+Testing Card #: 21
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 22
+Actual Cost: 2, Expected Cost: 2
+Test Passed
+
+Testing Card #: 23
+Actual Cost: 5, Expected Cost: 5
+Test Passed
+
+Testing Card #: 24
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 25
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+Testing Card #: 26
+Actual Cost: 4, Expected Cost: 4
+Test Passed
+
+File 'unittest1.c'
+Lines executed:94.74% of 19
+unittest1.c:creating 'unittest1.c.gcov'
+
+File 'dominion.c'
+Lines executed:20.96% of 649
+dominion.c:creating 'dominion.c.gcov'
+
+unittest2.c:
+TESTING updateCoins():
+All Gold Test
+Actual Coin Total: 16, Expected Coin Total: 16
+Test Passed
+
+All Silver Test
+Actual Coin Total: 14, Expected Coin Total: 14
+Test Passed
+
+All Copper Test
+Actual Coin Total: 5, Expected Coin Total: 5
+Test Passed
+
+Random Mix Test
+Actual Coin Total: 15, Expected Coin Total: 15
+Test Passed
+
+File 'unittest2.c'
+Lines executed:94.44% of 54
+unittest2.c:creating 'unittest2.c.gcov'
+
+File 'dominion.c'
+Lines executed:21.57% of 649
+dominion.c:creating 'dominion.c.gcov'
+
+unittest3.c:
+TESTING isGameOver():
+Test: Game is not over when supply cards including province are not empty 
+Test Passed
+
+Test: Game is over when province Supply pile is empty
+Test Passed
+
+Test: Game is over when any three Supply piles are empty
+Test Passed
+
+File 'unittest3.c'
+Lines executed:95.65% of 23
+unittest3.c:creating 'unittest3.c.gcov'
+
+File 'dominion.c'
+Lines executed:23.42% of 649
+dominion.c:creating 'dominion.c.gcov'
+
+unittest4.c:
+TESTING fullDeckCount():
+Test: Testing Starting Deck
+Testing Copper
+Test Passed
+
+Testing Estate
+Test Passed
+
+Test: Random Deck
+Deck #: 3
+Hand #: 1
+Discard #: 1
+Random Card # populated for all cards: 14
+Actual  Total: 5, Expected  Total: 5
+Test Passed
+
+File 'unittest4.c'
+Lines executed:97.62% of 42
+unittest4.c:creating 'unittest4.c.gcov'
+
+File 'dominion.c'
+Lines executed:25.12% of 649
+dominion.c:creating 'dominion.c.gcov'
+

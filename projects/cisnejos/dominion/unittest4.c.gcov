@@ -1,0 +1,87 @@
+        -:    0:Source:unittest4.c
+        -:    0:Graph:unittest4.gcno
+        -:    0:Data:unittest4.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "dominion.h"
+        -:    2:#include "dominion_helpers.h"
+        -:    3:#include <string.h>
+        -:    4:#include <stdio.h>
+        -:    5:#include <assert.h>
+        -:    6:#include "rngs.h"
+        -:    7:#include <time.h>
+        -:    8:#include <stdlib.h>
+        -:    9:
+        -:   10:void assertEqual(int expected, int actual) {
+        3:   11:    if (expected == actual) {
+        3:   12:        printf("Test Passed\n\n");
+        3:   13:    } else {
+    #####:   14:         printf("Test Failed\n\n");
+        -:   15:    }
+        3:   16:}
+        -:   17:
+        -:   18:int main() {
+        -:   19:
+        1:   20:    srand(time(NULL)); // Seed Random func
+        -:   21:
+        -:   22:    // Game init variables
+        1:   23:    int numberOfPlayers = 2;
+        1:   24:    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+        1:   25:    int randomSeed = 1000;
+        -:   26:    struct gameState State;
+        -:   27:
+        1:   28:    printf ("TESTING fullDeckCount():\n");
+        -:   29:
+        -:   30:    // init game
+        1:   31:    initializeGame(numberOfPlayers,kindomCards,randomSeed,&State);    
+        -:   32:
+        -:   33:    // Test initial game state
+        1:   34:        printf("Test: Testing Starting Deck\n");
+        1:   35:        printf("Testing Copper\n");
+        1:   36:        assertEqual(7, fullDeckCount(0, copper, &State));
+        1:   37:        printf("Testing Estate\n");
+        1:   38:        assertEqual(3, fullDeckCount(0, estate, &State));
+        -:   39:
+        -:   40:    // Test Random Deck State
+        1:   41:    int deckCount = rand() % 6;
+        1:   42:    int handCount = rand() % 6;
+        1:   43:    int discardCount = rand() % 10;
+        -:   44:
+        1:   45:    printf("Test: Random Deck\n");
+        1:   46:    printf("Deck #: %d\n", deckCount);
+        1:   47:    printf("Hand #: %d\n", handCount);
+        1:   48:    printf("Discard #: %d\n", discardCount);
+        -:   49:
+        -:   50:    // Set random values
+        1:   51:    State.deckCount[0] = deckCount;
+        1:   52:    State.handCount[0] = handCount;
+        1:   53:    State.discardCount[0] = discardCount;
+        -:   54:
+        -:   55:    // Set all cards to a random card
+        1:   56:    int randomCard = rand() % 27;
+        1:   57:    printf("Random Card # populated for all cards: %d\n", randomCard);
+        -:   58:
+        8:   59:    for (int i = 0; i < State.deckCount[0]; i++)
+        -:   60:      {
+        3:   61:        State.deck[0][i] = randomCard;
+        3:   62:      }
+        -:   63:
+        4:   64:    for (int i = 0; i < State.handCount[0]; i++)
+        -:   65:      {
+        1:   66:        State.hand[0][i] = randomCard;
+        1:   67:      }
+        -:   68:
+        4:   69:    for (int i = 0; i < State.discardCount[0]; i++)
+        -:   70:      {
+        1:   71:        State.discard[0][i] = randomCard;
+        1:   72:      }
+        -:   73:
+        1:   74:    int actualTotal = fullDeckCount(0, randomCard, &State);
+        1:   75:    int expectedTotal = deckCount + handCount + discardCount;
+        1:   76:    printf("Actual  Total: %d, Expected  Total: %d\n", actualTotal, expectedTotal);
+        -:   77:
+        1:   78:    assertEqual(expectedTotal, actualTotal);
+        -:   79:
+        -:   80:
+        1:   81:    return 0;   
+        -:   82:}

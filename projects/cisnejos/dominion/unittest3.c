@@ -31,7 +31,7 @@ int main() {
     initializeGame(numberOfPlayers,kindomCards,randomSeed,&State);    
 
     // Supply cards are not empty
-    printf("Test: Game is not over when supply cards including province are not empty \n");
+         printf("Test: Game is not over when supply cards including province are not empty \n");
 
     assertEqual(0, isGameOver(&State));
     
