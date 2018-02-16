@@ -35,8 +35,11 @@ randomtestadventurer.out: randomtestadventurer.c dominion.c rngs.c
 	gcc -o randomtestadventurer -g randomtestadventurer.c dominion.c rngs.c $(CFLAGS)
 	./randomtestadventurer >> randomtestadventurer.out
 	gcov randomtestadventurer.c >> randomtestadventurer.out
+	echo "Adventurer stats" >> randomtestadventurer.out
+	gcov -abcfu dominion.c | sed -n '/adventurerEffects/{n;p; n;p; n;p;}' >> randomtestadventurer.out
 	gcov dominion.c >> randomtestadventurer.out
 	cat dominion.c.gcov >> randomtestadventurer.out
+	
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)

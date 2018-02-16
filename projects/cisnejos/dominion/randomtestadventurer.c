@@ -16,9 +16,7 @@ void assertEqual(int expected, int actual) {
     }
 }
 
-void testAdventurerCard(int player, struct gameState *post) {
-
-}
+void testAdventurerCard(int player, struct gameState *post);
 
 int main() {
 
@@ -33,7 +31,7 @@ int main() {
 	int bonus = 0;
 
      // Game init variables
-    int numberOfPlayers = 2;
+    int numberOfPlayers = rand() % (4 + 1 - 2) + 2; 
     int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
     int randomSeed = 1000;
 	struct gameState G;
@@ -41,25 +39,20 @@ int main() {
 	printf("Testing Card: Adventurer\n");
 	printf ("RANDOM TESTS.\n");
 
-    // init game
-    initializeGame(numberOfPlayers,kindomCards,randomSeed,&G);    
-
+     
 	// iterate through tests
 	for (int i = 0; i < 2000; i++)	 {
 
-		// randomly init game state
-		for (i = 0; i < sizeof(struct gameState); i++) {
-			((char*)&G)[i] = floor(Random() * 256);
-		}
+		// init game
+    	initializeGame(numberOfPlayers,kindomCards,randomSeed,&G);  
 
 		// generate random function inputs
-		int currentPlayer = floor(Random() * 2);
+		int currentPlayer = rand() % 4;
 
 		// randomize hand
-		G.deckCount[currentPlayer] = floor(Random() * MAX_DECK);
-		G.discardCount[currentPlayer] = floor(Random() * MAX_DECK);
-		G.handCount[currentPlayer] = floor(Random() * MAX_HAND);
-		
+		G.deckCount[currentPlayer] = rand() % 501; 
+		G.discardCount[currentPlayer] = rand() % 501; 
+		G.handCount[currentPlayer] = rand() % 501; 
 		
 		// call test function
 		testAdventurerCard(currentPlayer, &G);
@@ -68,4 +61,8 @@ int main() {
 
 
 	return 0;
+}
+
+void testAdventurerCard(int player, struct gameState *post) {
+	
 }
