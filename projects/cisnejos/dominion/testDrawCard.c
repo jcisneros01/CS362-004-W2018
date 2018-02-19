@@ -61,8 +61,8 @@ int main () {
     }
     p = floor(Random() * 2);
     G.deckCount[p] = floor(Random() * MAX_DECK);
-    G.discardCount[p] = floor(Random() * MAX_DECK);
-    G.handCount[p] = floor(Random() * MAX_HAND);
+    G.discardCount[p] = floor(Random() * (MAX_DECK - G.deckCount[p]));
+    G.handCount[p] = floor(Random() * MAX_HAND - 3);
     checkDrawCard(p, &G);
   }
 
