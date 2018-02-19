@@ -57,7 +57,7 @@ randomtestcard2.out:  randomtestcard2.c dominion.c rngs.c
 	gcc -o randomtestcard2 -g randomtestcard2.c dominion.c rngs.c $(CFLAGS)
 	./randomtestcard2 >> randomtestcard2.out
 	gcov randomtestcard2.c >> randomtestcard2.out
-	echo "Smithy stats" >> randomtestcard2.out
+	echo "Village stats" >> randomtestcard2.out
 	gcov -abcfu dominion.c | sed -n '/villageEffects/{n;p; n;p; n;p;}' >> randomtestcard2.out
 	gcov dominion.c >> randomtestcard2.out
 	cat dominion.c.gcov >> randomtestcard2.out
