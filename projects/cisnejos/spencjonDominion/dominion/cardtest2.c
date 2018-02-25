@@ -4,68 +4,91 @@
 #include <stdio.h>
 #include <assert.h>
 #include "rngs.h"
-#include "assertDominionTest.h"
+#include <stdlib.h>
 
-int checkAdventurerCard(int currentPlayer, struct gameState* gameReturned){    
-    int returned, cardDrawn1, cardDrawn2;
-    struct gameState gameExpected;
-    memcpy (&gameExpected, gameReturned, sizeof(struct gameState));
-    //printf("HandCount1: %i     2: %i    DeckCount1: %i      2: %i      \n", gameExpected.handCount[currentPlayer], gameReturned->handCount[currentPlayer], gameExpected.deckCount[currentPlayer], gameReturned->deckCount[currentPlayer] );
-
-    returned = playCard(0,1,1,1,gameReturned);
-    
-    if(assertStandardDom(returned == 0, "Play Card Failed")){
-        return 1;
+void assertEqual(int expected, int actual) {
+    if (expected == actual) {
+        printf("Test Passed\n\n");
+    } else {
+         printf("Test Failed\n\n");
     }
-    gameExpected.handCount[currentPlayer] += 2;
-    gameExpected.deckCount[currentPlayer] -= 2;
-    if (assertStandardDom(gameReturned->deckCount[currentPlayer] == gameExpected.deckCount[currentPlayer], "Deck Count Varies")){
-        return 1;
-    }
-    if (assertStandardDom(gameReturned->handCount[currentPlayer] == gameExpected.handCount[currentPlayer], "Hand Count Varies")){
-        return 1;
-    }
-
-    cardDrawn1 = gameReturned->hand[currentPlayer][gameReturned->handCount[currentPlayer]-1];
-    cardDrawn2 = gameReturned->hand[currentPlayer][gameReturned->handCount[currentPlayer]-2];
-    if(assertStandardDom((cardDrawn1 == 4 || cardDrawn1 == 5 || cardDrawn1 == 6), "Did not draw a treasure first")){
-        return 1;    
-    }
-    if(assertStandardDom((cardDrawn2 == 4 || cardDrawn2 == 5 || cardDrawn2 == 6), "Did not draw a treasure second")){
-        return 1;    
-    }
-    return 0;
 }
 
+int main() {
 
-int main () {
+	// card variables
+	int card = adventurer;
+	int choice1 = 0;
+	int choice2 = 0;
+	int choice3 = 0;
+	int handPos = 0;
+	int bonus = 0;
 
-  int p, i;
+     // Game init variables
+    int numberOfPlayers = 2;
+    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    int randomSeed = 1000;
+	struct gameState State, StateCopy;
 
-  int k[10] = {adventurer, council_room, feast, gardens, mine,
-	       remodel, smithy, village, baron, great_hall};
+    // init game
+    initializeGame(numberOfPlayers,kindomCards,randomSeed,&State);    
 
-  struct gameState G;
+	// Copy game state
+	memcpy(&StateCopy, &State, sizeof(struct gameState));
 
-  printf ("SIMPLE FIXED TESTS: Adventurer Card\n");
-  for (p = 2; p < 5; p++)
-  {
-    for(i = 0; i < p; i++)
-    {
-        printf("Testing Players: %i, Player: %i\n", p, i);
-        initializeGame(2, k, 1, &G);
-        G.hand[i][0] = 7; //place adventurer card into hand
-        G.whoseTurn = i; //it's that person's turn
-        
-        if(checkAdventurerCard(i, &G))
-        {
-            printf("\n****ERROR: Tests Failed, requeted return****\n");
-            return 1;
-        } 
-    }
-    printf("\nTest for numPlayers = %i has passed\n", p);
-  }
-  printf("\nAll tests have passed\n");
+	printf("Testing Card: Adventurer\n");
 
-  return 0;
+	// play card
+	cardEffect(card, choice1, choice2, choice3, &State, handPos, &bonus);
+	
+	// check +2 treasure cards
+		printf("TEST 1: hand +2 treasure cards\n");
+		
+		int treasureCardNumActual = 0;
+		int treasureCardNumExpected = 0;
+
+		// check actual
+		for (int i = 0; i < State.handCount[0]; i++) {
+			
+			int card = State.hand[0][i];
+
+			if (card >= 4 && card  <= 6) {
+				treasureCardNumActual++;
+			}
+		}
+
+		// check expected
+		for (int i = 0; i < StateCopy.handCount[0]; i++) {
+			
+			int card = State.hand[0][i];
+
+			if (card >= 4 && card  <= 6) {
+				treasureCardNumExpected++;
+			}
+		}
+		printf("hand count = %d, expected = %d\n", treasureCardNumActual, treasureCardNumExpected+2);
+		assertEqual(treasureCardNumExpected+2, treasureCardNumActual);
+
+	// No state change should occur for other players.
+	printf("TEST 2: No change to player's Deck or Hand\n");
+	printf("deck count = %d, expected = %d\n", State.deckCount[1], StateCopy.deckCount[1]);
+	assertEqual(StateCopy.deckCount[1], State.deckCount[1]);
+	printf("hand count = %d, expected = %d\n", State.handCount[1], StateCopy.handCount[1]);
+	assertEqual(StateCopy.handCount[1], State.handCount[1]);
+
+	// No state change should occur to the victory card piles 
+	printf("TEST 3: No change to victory card piles\n");
+	for (int i = 1; i <= 3; i++) {
+		printf("Card # %d: count = %d, expected = %d\n", i , State.supplyCount[i], StateCopy.supplyCount[i]);
+		assertEqual(StateCopy.supplyCount[i], State.supplyCount[i]);
+	}
+	
+	// No state change should occur to the kingdom card piles 
+	printf("TEST 4: No change to kindom card piles\n");
+	for (int i = 0; i < 10; i++) {
+		printf("Card # %d: count = %d, expected = %d\n", kindomCards[i] , State.supplyCount[kindomCards[i]], StateCopy.supplyCount[kindomCards[i]]);
+		assertEqual(StateCopy.supplyCount[kindomCards[i]], State.supplyCount[kindomCards[i]]);
+	}
+
+	return 0;
 }

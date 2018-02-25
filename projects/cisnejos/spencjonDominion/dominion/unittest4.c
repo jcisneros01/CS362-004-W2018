@@ -1,58 +1,82 @@
-#include <string.h>
 #include "dominion.h"
-#include "assertDominionTest.h"
 #include "dominion_helpers.h"
+#include <string.h>
+#include <stdio.h>
+#include <assert.h>
 #include "rngs.h"
+#include <time.h>
+#include <stdlib.h>
 
-int checkIsGameOver(struct gameState* state) {
-    int returned;  
-    struct gameState modify = *state;
-    
-    returned = isGameOver(&modify);  
-    
-    if(assertStandardDom((returned == 0), "Just Initialized\n")){
-        return 1;
+void assertEqual(int expected, int actual) {
+    if (expected == actual) {
+        printf("Test Passed\n\n");
+    } else {
+         printf("Test Failed\n\n");
     }
-
-    modify.supplyCount[province] = 0;
-    returned = isGameOver(&modify);  
-    if(assertStandardDom((returned == 1), "Provinces == 0\n")){
-        return 1;
-    }
-
-    modify.supplyCount[province] = 2;
-    modify.supplyCount[smithy] = 0;
-    modify.supplyCount[adventurer] = 0;
-    modify.supplyCount[great_hall] = 0;
-    returned = isGameOver(&modify);  
-    if(assertStandardDom((returned == 1), "3 supply piles are empy\n")){
-        return 1;
-    }
-
-    printf("All Tests passed\n");
-    return 0;
 }
 
-int main(){
-  int r, p;
-  int k[10] = {adventurer, council_room, feast, gardens, mine,
-	       remodel, smithy, village, baron, great_hall};
-  struct gameState G;
+int main() {
 
-  printf ("Simple Fixed Tests: isGameOver(...)\n");
+    srand(time(NULL)); // Seed Random func
 
-  for(p = 2; p < 5; p++){
-      r = initializeGame(p, k, 1, &G);
-      if(assertStandardDom((r == 0), "initializeGame failed\n")){
-        printf("Return Requested.. Returning... \n");
-        return 1;
+    // Game init variables
+    int numberOfPlayers = 2;
+    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    int randomSeed = 1000;
+    struct gameState State;
+
+    printf ("TESTING fullDeckCount():\n");
+
+    // init game
+    initializeGame(numberOfPlayers,kindomCards,randomSeed,&State);    
+
+    // Test initial game state
+        printf("Test: Testing Starting Deck\n");
+        printf("Testing Copper\n");
+        assertEqual(7, fullDeckCount(0, copper, &State));
+        printf("Testing Estate\n");
+        assertEqual(3, fullDeckCount(0, estate, &State));
+
+    // Test Random Deck State
+    int deckCount = rand() % 10;
+    int handCount = rand() % 6;
+    int discardCount = rand() % 10;
+
+    printf("Test: Random Deck\n");
+    printf("Deck #: %d\n", deckCount);
+    printf("Hand #: %d\n", handCount);
+    printf("Discard #: %d\n", discardCount);
+
+    // Set random values
+    State.deckCount[0] = deckCount;
+    State.handCount[0] = handCount;
+    State.discardCount[0] = discardCount;
+
+    // Set all cards to a random card
+    int randomCard = rand() % 27;
+    printf("Random Card # populated for all cards: %d\n", randomCard);
+
+    for (int i = 0; i < State.deckCount[0]; i++)
+      {
+        State.deck[0][i] = randomCard;
       }
-      if(checkIsGameOver(&G)){
-        printf("Return Requested.. Returning...\n");
-        return 1;
-    }
-    printf("Tests passed for %i players\n", p);
-  }
-  printf("Tests passed for all number of players\n");
-  return 0;
+
+    for (int i = 0; i < State.handCount[0]; i++)
+      {
+        State.hand[0][i] = randomCard;
+      }
+
+    for (int i = 0; i < State.discardCount[0]; i++)
+      {
+        State.discard[0][i] = randomCard;
+      }
+
+    int actualTotal = fullDeckCount(0, randomCard, &State);
+    int expectedTotal = deckCount + handCount + discardCount;
+    printf("Actual  Total: %d, Expected  Total: %d\n", actualTotal, expectedTotal);
+
+    assertEqual(expectedTotal, actualTotal);
+
+
+    return 0;   
 }

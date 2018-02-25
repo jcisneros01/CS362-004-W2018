@@ -1,135 +1,118 @@
 #include "dominion.h"
 #include "dominion_helpers.h"
-#include "assertDominionTest.h"
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
 #include "rngs.h"
 #include <math.h>
 
-
-/*
-void copyGame(struct gameState *dst, struct gameState *src){
-  int i, j;
-  
-  dst->numPlayers = src->numPlayers; //number of players
-  
-  for(i = 0; i <= treasure_map; i++){
-    dst->supplyCount[i] = src->supplyCount[i];  //this is the amount of a specific type of card given a specific number.
-    dst->embargoTokens[i] = src->supplyCount[i];
-  }
-  
-  dst->outpostPlayed = src->outpostPlayed;
-  dst->outpostTurn = src->outpostTurn;
-  dst->whoseTurn = src->whoseTurn;
-  dst->phase = src->phase;
-  dst->numActions = src->numActions;  Starts at 1 each turn 
-  dst->coins = src->coins;  Use as you see fit! 
-  dst->numBuys = src->numBuys;  Starts at 1 each turn 
-  for(i = 0; i < src->numPlayers; i++){
-    dst->handCount[i] = src->handCount[i];
-    for(j = 0; j < src->handCount[i]; j++)
-        dst->hand[i][j] = src->hand[i][j];
-  }
-  for(i = 0; i < src->numPlayers; i++){
-    dst->handCount[i] = src->handCount[i];
-    dst->deckCount[i] = src->deckCount[i];
-    dst->discardCount[i] = src->discardCount[i];
-    for(j = 0; j < src->handCount[i]; j++)
-        dst->hand[i][j] = src->hand[i][j];
-    for(j = 0; j < src->deckCount[i]; j++)
-        dst->deck[i][j] = src->deck[i][j];        
-    for(j = 0; j < src->discardCount[i]; j++)
-        dst->discard[i][j] = src->discard[i][j];
-  }
-  dst->playedCardCount = src->playedCardCount;
-  for(i = 0; i < src->playedCardCount; i++)
-    dst->playedCards[i] = src->playedCards[i];
+void assertEqual(int expected, int actual, char *string ) {
+    if (expected == actual) {
+        // printf("Test Passed\n\n");
+    } else {
+         printf("%s - ", string);
+         printf("Test Failed\n");
+    }
 }
 
+void checkVillage(int currentPlayer, struct gameState *post) {
 
-*/
+	// copy game state
+	struct gameState pre;	  
+	memcpy (&pre, post, sizeof(struct gameState));
 
-int checkSmithy(int p, struct gameState *post){
-  struct gameState pre;
-  int r, i;
-  //printf("Going into setup\n");
-  memcpy(&pre, post, sizeof(struct gameState));
- // printf("Going into setup\n");
-  for(i = 0; i < pre.handCount[p]; i++){
-    r = -50;
-    if(pre.hand[p][i] == smithy){
-      //printf("Found Card \n");
-      r = smithy_effect(p, post, i);
-      break;
-    }
-  }  
-  if(pre.handCount[p] == 0){
-    return 0;
-  }
-    //printf("handCount: %i  %i Deck count: %i %i\n", pre.handCount[p], post->handCount[p], (pre.discardCount[p] + pre.deckCount[p]), (post->discardCount[p] + post->deckCount[p]));
-    assertStandardDom(r <= 0, "smithy Returned more than 0");
-    assertStandardDom(post->handCount[p]==(pre.handCount[p] + 2),"rand smithy: Hand Count incorrect");
-    assertStandardDom((pre.discardCount[p] + pre.deckCount[p] - 2)  == (post->discardCount[p] + post->deckCount[p]), "rand smithy: incorrect deck/discard counts");
-  
-  return 0;
+	// set player 2
+	int otherPlayer;
+	if (currentPlayer == 1) {
+		otherPlayer = 0;
+	} else {
+		otherPlayer = 1;
+	}
+	
+	int card = village;
+	int choice1 = 0;
+	int choice2 = 0;
+	int choice3 = 0;
+	int handPos = 0;
+	int bonus = 0;
+
+	// play card
+	cardEffect(card, choice1, choice2, choice3, post, handPos, &bonus);
+
+	// get expected state
+	 drawCard(currentPlayer, &pre);
+	 pre.numActions = pre.numActions + 2;
+	 discardCard(handPos, currentPlayer, &pre, 0);
+
+	// check output
+	assertEqual(pre.handCount[currentPlayer], post->handCount[currentPlayer], "Test 1: handCount");
+
+	assertEqual(pre.deckCount[currentPlayer], post->deckCount[currentPlayer], "Test 2: deckCount");
+
+	assertEqual(pre.discardCount[currentPlayer], post->discardCount[currentPlayer], "Test 3: discardCount");
+
+	// Current player should receive exactly 2 actions
+	assertEqual(pre.numActions, post->numActions, "TEST 4: actions +2");
+
+	// no state change should occur for other players.
+	assertEqual(pre.deckCount[otherPlayer], post->deckCount[otherPlayer], "TEST 5A: No change to player's Deck");
+	assertEqual(pre.handCount[otherPlayer], post->handCount[otherPlayer], "TEST 5B: No change to player's Deck");	
+
+	// No state change should occur to the victory card piles 
+	for (int i = 1; i <= 3; i++) {
+		assertEqual(pre.supplyCount[i], post->supplyCount[i], "TEST 6: No change to victory card piles");
+	}
+
+	// No state change should occur to the kingdom card piles 
+	int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+	for (int i = 0; i < 10; i++) {
+		assertEqual(pre.supplyCount[kindomCards[i]], post->supplyCount[kindomCards[i]], "TEST 7: No change to kindom card piles");
+	}
+	
 }
 
+int main() {
 
-int main(){
+	// Game init variables
+    int numberOfPlayers = 2;
+    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    int randomSeed = 1000;
+	struct gameState G;
 
-  int i, n, p,j, numCards, smithyFlag = 0;
-  struct gameState G;
 
-  printf ("Testing smithy effect.\n");
+    // init game
+    initializeGame(numberOfPlayers,kindomCards,randomSeed,&G);  
 
-  printf ("RANDOM TESTS.\n");
+	printf("Testing Card: Village\n");
 
-  for (n = 0; n < 2000; n++) {
-    for (i = 0; i < sizeof(struct gameState); i++) {
-      ((char*)&G)[i] = floor(Random() * 256);
-    }
-    p = floor(Random() * MAX_PLAYERS);
-    numCards = floor(Random() * MAX_DECK);
-    G.deckCount[p] = numCards - floor(Random() * numCards);
-    G.discardCount[p] = floor(Random() * (numCards - G.deckCount[p]));
-    G.handCount[p] = numCards - G.deckCount[p] - G.discardCount[p];
-    G.numActions = floor(Random() * 100);
-    //printf("INITIAL: nc: %i dec: %i dic: %i hc: %i na: %i\n",numCards, G.deckCount[p], G.discardCount[p],G.handCount[p],G.numActions );
-    if(G.handCount[p] < 1){
-        G.handCount[p] = 1;
-        if(G.discardCount[p] < 1)
-            G.discardCount[p]--;
-        else 
-            G.deckCount[p]--;
-    }
+	SelectStream(2);
+  	PutSeed(3);
 
-    for(i = 0; i < G.deckCount[p]; i++){
-        G.deck[p][i] = floor(Random() * treasure_map);
-    }
+	// iterate through tests
+	for (int i = 1; i <= 2000; i++)	 {
 
-    for(i = 0; i < G.discardCount[p]; i++){
-      G.discard[p][i] = floor(Random() * treasure_map);
-    }
+		// create random game state
+		for (int j = 0; j < sizeof(struct gameState); j++) {
+		  ((char*)&G)[j] = floor(Random() * 256);
+		}
+		
+		// generate random function inputs
+		for (int i = 0; i < 2; i++) {
+			G.deckCount[i] = floor(Random() * MAX_DECK);
+			G.discardCount[i] = floor(Random() * MAX_DECK);
+			G.handCount[i] = floor(Random() * MAX_HAND);
+		}
+		int p = floor(Random() * 2);
+		G.whoseTurn = p;
+		G.playedCardCount = floor(Random() * (MAX_DECK-1));
 
-    for(i = 0; i < G.handCount[p]; i++){
-      j = floor(Random() * (treasure_map+1));
-      G.hand[p][i]=j;
-      if(smithy == j){
-        smithyFlag = 1;
-      }
-    }
+		printf("\nRandom Test #: %d \n", i);
+		
+		// call test function
+		checkVillage(p, &G);
 
-    G.playedCardCount = 0;
-    if(!smithyFlag){
-      i = floor(Random() * G.handCount[p]);
-      G.hand[p][i] = smithy;
-    }
-    checkSmithy(p, &G);
+	}
 
-  }
-
-  printf ("ALL TESTS OK\n");
-
-  return 0;
+	return 0;
 }
+

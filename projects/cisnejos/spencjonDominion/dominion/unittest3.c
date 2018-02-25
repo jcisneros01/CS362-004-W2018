@@ -1,65 +1,60 @@
-#include <string.h>
 #include "dominion.h"
-#include "assertDominionTest.h"
 #include "dominion_helpers.h"
+#include <string.h>
+#include <stdio.h>
+#include <assert.h>
 #include "rngs.h"
+#include <time.h>
+#include <stdlib.h>
 
-/*
-
-int supplyCount(int card, struct gameState *state) {
-  return state->supplyCount[card];
+void assertEqual(int expected, int actual) {
+    if (expected == actual) {
+        printf("Test Passed\n\n");
+    } else {
+         printf("Test Failed\n\n");
+    }
 }
 
-*/
+int main() {
 
+    srand(time(NULL)); // Seed Random func
 
-int checkSupplyCount(int card, struct gameState* state) {
-    int expectedCount, returnedCount, numPlayers;
-    char msg1[] = "Too many Estate, Dutchy, or Province";
-    char msg2[] = "CheckSupplyCount, not equal";
-    returnedCount = supplyCount(card, state);
-    expectedCount = state->supplyCount[card];
-    if(assertStandardDom((returnedCount == expectedCount), msg2)){
-      return 1;
-    }
+    // Game init variables
+    int numberOfPlayers = 2;
+    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    int randomSeed = 1000;
+    struct gameState State;
 
-    numPlayers = state->numPlayers;
-    if(numPlayers < 3){
-      if(card >= 1 && card <= 3){
-        if(assertStandardDom((returnedCount == 8), msg1)){
-          printf("CardNum %i, numPlayers %i, numCards %i\n", card, numPlayers, returnedCount);
-          return 1;
-        }
-      }
-    }
-  return 0;
-}
+    printf ("TESTING isGameOver():\n");
 
+    // init game
+    initializeGame(numberOfPlayers,kindomCards,randomSeed,&State);    
 
-int main(){
-  int p, i, r;
-  int k[10] = {adventurer, council_room, feast, gardens, mine,
-	       remodel, smithy, village, baron, great_hall};
-  struct gameState G;
-  char msg1[] = "initializeGame failed";
-  printf ("Simple Fixed Tests: supplyCount(...)\n");
+    // Supply cards are not empty
+         printf("Test: Game is not over when supply cards including province are not empty \n");
 
-  for(p = 2; p < 5; p++){
-    for(i = 0; i < 27; i++){
-      r = initializeGame(p, k, 1, &G);
-      if(assertStandardDom((r == 0), msg1)){
-        printf("Return Requested.. Returning... \n");
-        return 1;
-      }
+    assertEqual(0, isGameOver(&State));
+    
+    // Province Supply pile is empty 
+      
+        // set province card supply to 0
+        State.supplyCount[province] = 0;
 
-      if(checkSupplyCount(i, &G)){
-        printf("Return Requested.. Returning... card number: %i \n", i);
-        return 1;
-      }
+        printf("Test: Game is over when province Supply pile is empty\n");
 
-    }
-    printf("Tests passed for %i cards\n", i);
-  }
-  printf("Tests passed for all number of players\n");
-  return 0;
+        assertEqual(1, isGameOver(&State));
+
+    // Any three Supply piles are empty
+        State.supplyCount[province] = 1;
+
+        printf("Test: Game is over when any three Supply piles are empty\n");
+
+        // Set empty piles
+        State.supplyCount[0] = 0;
+        State.supplyCount[1] = 0;
+        State.supplyCount[2] = 0;
+
+        assertEqual(1, isGameOver(&State));
+
+    return 0;
 }
