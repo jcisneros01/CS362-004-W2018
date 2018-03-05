@@ -1,0 +1,69 @@
+Unique ID (name/number): 
+312
+
+What is the bug?
+When the updateCoins function is tested, the coin total is incorrect. 
+
+How do you make the bug happen (BE SPECIFIC)?
+Below is a list of the test cases that failed. A hand of all gold, silver, copper, and a random mix of coins. 
+
+All Gold Test
+Actual Coin Total: 3, Expected Coin Total: 18
+Test Failed
+
+All Silver Test
+Actual Coin Total: 6, Expected Coin Total: 16
+Test Failed
+
+All Copper Test
+Actual Coin Total: 1, Expected Coin Total: 6
+Test Failed
+
+Random Mix Test
+Actual Coin Total: 6, Expected Coin Total: 18
+Test Failed
+
+What version of the software was this detected on?
+Linux flip1.engr.oregonstate.edu 3.10.0-693.11.1.el7.x86_64 #1 SMP Mon Dec 4 23:52:40 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+What is the estimated severity of the bug? 
+Critical
+
+What is the estimated priority of the bug? 
+High Priority
+
+
+
+Unique ID (name/number): 
+313
+
+What is the bug?
+When the updateCoins function is tested, the coin total is incorrect. 
+
+How do you make the bug happen (BE SPECIFIC)?
+Below is a list of the test cases that failed. A hand of all gold, silver, copper, and a random mix of coins. 
+
+All Gold Test
+Actual Coin Total: 3, Expected Coin Total: 18
+Test Failed
+
+All Silver Test
+Actual Coin Total: 6, Expected Coin Total: 16
+Test Failed
+
+All Copper Test
+Actual Coin Total: 1, Expected Coin Total: 6
+Test Failed
+
+Random Mix Test
+Actual Coin Total: 6, Expected Coin Total: 18
+Test Failed
+
+What version of the software was this detected on?
+Linux flip1.engr.oregonstate.edu 3.10.0-693.11.1.el7.x86_64 #1 SMP Mon Dec 4 23:52:40 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+What is the estimated severity of the bug? 
+Critical
+
+What is the estimated priority of the bug? 
+High Priority

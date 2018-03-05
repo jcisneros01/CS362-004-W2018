@@ -1,0 +1,123 @@
+        -:    0:Source:randomtestcard2.c
+        -:    0:Graph:randomtestcard2.gcno
+        -:    0:Data:randomtestcard2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "dominion.h"
+        -:    2:#include "dominion_helpers.h"
+        -:    3:#include <string.h>
+        -:    4:#include <stdio.h>
+        -:    5:#include <assert.h>
+        -:    6:#include "rngs.h"
+        -:    7:#include <math.h>
+        -:    8:
+        -:    9:void assertEqual(int expected, int actual, char *string ) {
+    38000:   10:    if (expected == actual) {
+        -:   11:        // printf("Test Passed\n\n");
+    38000:   12:    } else {
+    #####:   13:         printf("%s - ", string);
+    #####:   14:         printf("Test Failed\n");
+        -:   15:    }
+    38000:   16:}
+        -:   17:
+        -:   18:void checkVillage(int currentPlayer, struct gameState *post) {
+        -:   19:
+        -:   20:	// copy game state
+        -:   21:	struct gameState pre;	  
+     2000:   22:	memcpy (&pre, post, sizeof(struct gameState));
+        -:   23:
+        -:   24:	// set player 2
+        -:   25:	int otherPlayer;
+     2000:   26:	if (currentPlayer == 1) {
+     1010:   27:		otherPlayer = 0;
+     1010:   28:	} else {
+      990:   29:		otherPlayer = 1;
+        -:   30:	}
+        -:   31:	
+     2000:   32:	int card = village;
+     2000:   33:	int choice1 = 0;
+     2000:   34:	int choice2 = 0;
+     2000:   35:	int choice3 = 0;
+     2000:   36:	int handPos = 0;
+     2000:   37:	int bonus = 0;
+        -:   38:
+        -:   39:	// play card
+     2000:   40:	cardEffect(card, choice1, choice2, choice3, post, handPos, &bonus);
+        -:   41:
+        -:   42:	// get expected state
+     2000:   43:	 drawCard(currentPlayer, &pre);
+     2000:   44:	 pre.numActions = pre.numActions + 2;
+     2000:   45:	 discardCard(handPos, currentPlayer, &pre, 0);
+        -:   46:
+        -:   47:	// check output
+     2000:   48:	assertEqual(pre.handCount[currentPlayer], post->handCount[currentPlayer], "Test 1: handCount");
+        -:   49:
+     2000:   50:	assertEqual(pre.deckCount[currentPlayer], post->deckCount[currentPlayer], "Test 2: deckCount");
+        -:   51:
+     2000:   52:	assertEqual(pre.discardCount[currentPlayer], post->discardCount[currentPlayer], "Test 3: discardCount");
+        -:   53:
+        -:   54:	// Current player should receive exactly 2 actions
+     2000:   55:	assertEqual(pre.numActions, post->numActions, "TEST 4: actions +2");
+        -:   56:
+        -:   57:	// no state change should occur for other players.
+     2000:   58:	assertEqual(pre.deckCount[otherPlayer], post->deckCount[otherPlayer], "TEST 5A: No change to player's Deck");
+     2000:   59:	assertEqual(pre.handCount[otherPlayer], post->handCount[otherPlayer], "TEST 5B: No change to player's Deck");	
+        -:   60:
+        -:   61:	// No state change should occur to the victory card piles 
+    16000:   62:	for (int i = 1; i <= 3; i++) {
+     6000:   63:		assertEqual(pre.supplyCount[i], post->supplyCount[i], "TEST 6: No change to victory card piles");
+     6000:   64:	}
+        -:   65:
+        -:   66:	// No state change should occur to the kingdom card piles 
+     2000:   67:	int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    44000:   68:	for (int i = 0; i < 10; i++) {
+    20000:   69:		assertEqual(pre.supplyCount[kindomCards[i]], post->supplyCount[kindomCards[i]], "TEST 7: No change to kindom card piles");
+    20000:   70:	}
+        -:   71:	
+     2000:   72:}
+        -:   73:
+        -:   74:int main() {
+        -:   75:
+        -:   76:	// Game init variables
+        1:   77:    int numberOfPlayers = 2;
+        1:   78:    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+        1:   79:    int randomSeed = 1000;
+        -:   80:	struct gameState G;
+        -:   81:
+        -:   82:
+        -:   83:    // init game
+        1:   84:    initializeGame(numberOfPlayers,kindomCards,randomSeed,&G);  
+        -:   85:
+        1:   86:	printf("Testing Card: Village\n");
+        -:   87:
+        1:   88:	SelectStream(2);
+        1:   89:  	PutSeed(3);
+        -:   90:
+        -:   91:	// iterate through tests
+     4002:   92:	for (int i = 1; i <= 2000; i++)	 {
+        -:   93:
+        -:   94:		// create random game state
+105204000:   95:		for (int j = 0; j < sizeof(struct gameState); j++) {
+ 52600000:   96:		  ((char*)&G)[j] = floor(Random() * 256);
+ 52600000:   97:		}
+        -:   98:		
+        -:   99:		// generate random function inputs
+    12000:  100:		for (int i = 0; i < 2; i++) {
+     4000:  101:			G.deckCount[i] = floor(Random() * MAX_DECK);
+     4000:  102:			G.discardCount[i] = floor(Random() * MAX_DECK);
+     4000:  103:			G.handCount[i] = floor(Random() * MAX_HAND);
+     4000:  104:		}
+     2000:  105:		int p = floor(Random() * 2);
+     2000:  106:		G.whoseTurn = p;
+     2000:  107:		G.playedCardCount = floor(Random() * (MAX_DECK-1));
+        -:  108:
+     2000:  109:		printf("\nRandom Test #: %d \n", i);
+        -:  110:		
+        -:  111:		// call test function
+     2000:  112:		checkVillage(p, &G);
+        -:  113:
+     2000:  114:	}
+        -:  115:
+        1:  116:	return 0;
+        -:  117:}
+        -:  118:

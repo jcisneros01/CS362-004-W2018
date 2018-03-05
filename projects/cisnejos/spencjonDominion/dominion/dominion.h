@@ -78,7 +78,7 @@ struct gameState {
 
 struct gameState* newGame();
 int smithy_effect(int currentPlayer, struct gameState *state, int handPos); //
-int adventurer_effect(struct gameState *state, int currentPlayer, int handPos); //
+int adventurer_effect(struct gameState *state, int currentPlayer); //
 int village_effect(int currentPlayer, struct gameState *state, int handPos); //
 int baron_effect(int currentPlayer, struct gameState *state, int handPos, int choice1); //
 int council_room_effect(int currentPlayer, struct gameState *state, int handPos); //

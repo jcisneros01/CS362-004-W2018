@@ -295,7 +295,7 @@ int buyCard(int supplyPos, struct gameState *state) {
   } else {
     state->phase=1;
     //state->supplyCount[supplyPos]--;
-    gainCard(supplyPos, state, 0, who); //card goes in discard, this might be wrong.. (2 means goes into hand, 0 goes into discard)
+    gainCard(supupplyPos, state, 0, who); //card goes in discard, this might be wrong.. (2 means goes into hand, 0 goes into discard)
   
     state->coins = (state->coins) - (getCost(supplyPos));
     state->numBuys--;
@@ -667,7 +667,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-      return adventurer_effect(state, currentPlayer, handPos);
+      return adventurer_effect(state, currentPlayer);
 
     case council_room:
       return council_room_effect(currentPlayer, state, handPos);
@@ -1234,10 +1234,10 @@ int smithy_effect(int currentPlayer, struct gameState *state, int handPos){ //dr
         
     //discard card from hand
     discardCard(handPos, currentPlayer, state, 0);
-    return 0;
+    return -1;
 }
 
-int adventurer_effect(struct gameState *state, int currentPlayer , int handPos){
+int adventurer_effect(struct gameState *state, int currentPlayer){
     int cardDrawn;
     int temphand[MAX_HAND];
     int z = 0;
@@ -1265,7 +1265,7 @@ int adventurer_effect(struct gameState *state, int currentPlayer , int handPos){
 }
 
 int village_effect(int currentPlayer, struct gameState *state, int handPos){
-    //+1 Card
+//+1 Card
     drawCard(currentPlayer, state);
         
     //+2 Actions 

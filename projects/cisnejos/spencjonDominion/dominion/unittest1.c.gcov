@@ -1,0 +1,56 @@
+        -:    0:Source:unittest1.c
+        -:    0:Graph:unittest1.gcno
+        -:    0:Data:unittest1.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:
+        -:    2:#include "dominion.h"
+        -:    3:#include "dominion_helpers.h"
+        -:    4:#include <string.h>
+        -:    5:#include <stdio.h>
+        -:    6:#include <assert.h>
+        -:    7:#include "rngs.h"
+        -:    8:
+        -:    9:void assertEqual(int expected, int actual) {
+       27:   10:    if (expected == actual) {
+       27:   11:        printf("Test Passed\n\n");
+       27:   12:    } else {
+    #####:   13:         printf("Test Failed\n\n");
+        -:   14:    }
+       27:   15:}
+        -:   16:
+        -:   17:int main() {
+        -:   18:
+        -:   19:    // Game init variables
+        1:   20:    int numberOfPlayers = 2;
+        1:   21:    int kindomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+        1:   22:    int randomSeed = 1000;
+        -:   23:    struct gameState State;
+        -:   24:
+        -:   25:    // print heading
+        1:   26:    printf ("TESTING getCost():\n");
+        -:   27:
+        -:   28:    // init game
+        1:   29:    initializeGame(numberOfPlayers,kindomCards,randomSeed,&State);
+        -:   30:
+        -:   31:    // array of expected costs for each card in order
+        1:   32:    int expectedCost[27] = {0,2,5,8,0,3,6,6,5,4,4,5,4,4,3,4,3,5,3,5,3,4,2,5,4,4,4}; 
+        -:   33:
+        -:   34:    // Cycle through and test each card
+       56:   35:    for (int i = 0; i < 27; i++) {
+        -:   36:
+        -:   37:        // get test card
+       27:   38:        int testCard = i;
+        -:   39:
+        -:   40:        // get test card cost
+       27:   41:        int actualCost = getCost(testCard);
+        -:   42:
+        -:   43:        // print card
+       27:   44:        printf("Testing Card #: %d\n", testCard);
+        -:   45:
+        -:   46:        // print cost
+       27:   47:        printf("Actual Cost: %d, Expected Cost: %d\n", actualCost, expectedCost[i]);
+        -:   48:
+       27:   49:        assertEqual(expectedCost[i], actualCost);
+       27:   50:    }
+        1:   51:}
