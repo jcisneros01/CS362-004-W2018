@@ -18,55 +18,45 @@ public class UrlValidatorTest extends TestCase {
    public void testManualTest()
    {	
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println(urlVal.isValid("http://www.google.com/"));
-	   System.out.println(urlVal.isValid("256.256.256.256"));
-	   System.out.println(urlVal.isValid("http://138.197.198.178:-1"));;
-	   System.out.println(urlVal.isValid("http://www.google.com/test1"));
+	   assertEquals("http://www.google.com/ should validate", true, urlVal.isValid("http://www.google.com/"));
+	   assertEquals("256.256.256.256 should not validate", false, urlVal.isValid("256.256.256.256"));
+	   assertEquals("http://www.google.com/test1 should validate", true, urlVal.isValid("http://www.google.com/test1"));
+	   assertEquals("http://138.197.198.178:-1 should not validate", false, urlVal.isValid("http://138.197.198.178:-1"));
    }
    
    
    public void testYourFirstPartition() {
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println("\ntest Url Scheme");
-	   System.out.println(urlVal.isValid("http://www.google.com"));
-	   System.out.println(urlVal.isValid("3ht://www.google.com"));
+	   assertEquals("http://www.google.com should validate", true, urlVal.isValid("http://www.google.com"));
+	   assertEquals("3ht://www.google.com should not validate", false, urlVal.isValid("3ht://www.google.com"));
    }
    
    public void testYourSecondPartition(){
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println("\ntest Url Authority");
-	   System.out.println(urlVal.isValid("http://www.go.com"));
-	   System.out.println(urlVal.isValid("256.256.256.256"));
+	   assertEquals("http://www.go.coms should  validate", true, urlVal.isValid("http://www.go.com"));
+	   assertEquals("256.256.256.256 should not validate", false, urlVal.isValid("256.256.256.256"));
    }
 
    public void testYourThirdPartition(){
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println("\ntest Url Port");
-	   System.out.println(urlVal.isValid("http://138.197.198.178:65535"));
-	   System.out.println(urlVal.isValid("http://138.197.198.178:-1"));
+	   assertEquals("http://138.197.198.178:65535 should validate", true, urlVal.isValid("http://138.197.198.178:65535"));
+	   assertEquals("http://138.197.198.178:-1 should not validate", false, urlVal.isValid("http://138.197.198.178:-1"));
    }
    
    public void testYourFourthPartition(){
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println("\ntest Path");
-	   System.out.println(urlVal.isValid("http://www.google.com/test1"));
-	   System.out.println(urlVal.isValid("http://www.google.com/../"));
+	   assertEquals("http://www.google.com/test1 should validate", true, urlVal.isValid("http://www.google.com/test1"));
+	   assertEquals("http://www.google.com/../ should not validate", false, urlVal.isValid("http://www.google.com/../"));
    }
    
    public void testYourFifthPartition(){
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println("\ntest Url Query");
-	   System.out.println(urlVal.isValid("http://www.amazon.com/?action=view"));
+	   assertEquals("http://www.amazon.com/?action=view should validate", true, urlVal.isValid("http://www.amazon.com/?action=view"));
    }
-   
- 
    
    public void testIsValid()
    {
 	   //You can use this function for programming based testing
 
    }
-   
-
-
 }
