@@ -60,14 +60,14 @@ public class UrlValidatorTest extends TestCase {
 		boolean expected = true;
 		boolean actual;
 
-		for (int i = 1; i < 10; i++) {
+		for (int i = 1; i < 10000; i++) {
 			
 			// generate random URL
-			int randomScheme = ThreadLocalRandom.current().nextInt(0, 8 + 1);
-			int randomAuthority = ThreadLocalRandom.current().nextInt(0, 18 + 1);
-			int randomPort = ThreadLocalRandom.current().nextInt(0, 6 + 1);
-			int randomPath = ThreadLocalRandom.current().nextInt(0, 9 + 1);
-			int randomQuery = ThreadLocalRandom.current().nextInt(0, 2 + 1);
+			int randomScheme = ThreadLocalRandom.current().nextInt(0, testUrlScheme.length-1 + 1);
+			int randomAuthority = ThreadLocalRandom.current().nextInt(0, testUrlAuthority.length-1 + 1);
+			int randomPort = ThreadLocalRandom.current().nextInt(0, testUrlPort.length-1 + 1);
+			int randomPath = ThreadLocalRandom.current().nextInt(0, testPath.length-1 + 1);
+			int randomQuery = ThreadLocalRandom.current().nextInt(0, testUrlQuery.length-1 + 1);
 			
 			url = testUrlScheme[randomScheme].item + testUrlAuthority[randomAuthority].item + testUrlPort[randomPort].item + testPath[randomPath].item + testUrlQuery[randomQuery].item;
 			expected = testUrlScheme[randomScheme].valid & testUrlAuthority[randomAuthority].valid & testUrlPort[randomPort].valid & testPath[randomPath].valid & testUrlQuery[randomQuery].valid;
