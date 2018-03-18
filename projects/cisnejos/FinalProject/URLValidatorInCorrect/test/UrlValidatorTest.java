@@ -13,8 +13,7 @@ public class UrlValidatorTest extends TestCase {
    public UrlValidatorTest(String testName) {
       super(testName);
    }
-
-
+   
    public void testManualTest()
    {	
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
@@ -23,7 +22,6 @@ public class UrlValidatorTest extends TestCase {
 	   assertEquals("http://www.google.com/test1 should validate", true, urlVal.isValid("http://www.google.com/test1"));
 	   assertEquals("http://138.197.198.178:-1 should not validate", false, urlVal.isValid("http://138.197.198.178:-1"));
    }
-   
    
    public void testYourFirstPartition() {
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
@@ -35,6 +33,7 @@ public class UrlValidatorTest extends TestCase {
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
 	   assertEquals("http://www.go.coms should  validate", true, urlVal.isValid("http://www.go.com"));
 	   assertEquals("256.256.256.256 should not validate", false, urlVal.isValid("256.256.256.256"));
+	   assertEquals("http://138.197.198.257 should not validate", false, urlVal.isValid("http://138.197.198.257"));
    }
 
    public void testYourThirdPartition(){
